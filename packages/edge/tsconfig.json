@@ -1,0 +1,17 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": ["lib", "node_modules"],
+  "compilerOptions": {
+    "lib": ["ES2019", "DOM.Iterable"],
+    "target": "ES2019",
+    "skipLibCheck": true,
+
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "./lib"
+  }
+}
