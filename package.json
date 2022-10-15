@@ -1,9 +1,13 @@
 {
   "name": "root",
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "lerna": "^6.0.1"
+    "eslint": "^8.25.0",
+    "eslint-plugin-markdown": "^3.0.0",
+    "lerna": "^6.0.1",
+    "prettier": "^2.7.1"
   }
 }
