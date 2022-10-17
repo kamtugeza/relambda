@@ -1,12 +1,23 @@
 /** @type {import('jest').Config} */
 module.exports = {
+  setupFiles: ['<rootDir>/src/globals.ts'],
   testEnvironment: 'jest-environment-node',
   testMatch: ['<rootDir>/src/**/*.test.ts'],
   transform: {
-    '\\.[jt]s$': [
+    '\\.ts$': [
       'babel-jest',
       {
-        presets: [['@babel/preset-env'], '@babel/preset-typescript'],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                node: 'current',
+              },
+            },
+          ],
+          '@babel/preset-typescript',
+        ],
       },
     ],
   },
