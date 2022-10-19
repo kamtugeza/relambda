@@ -1,7 +1,7 @@
 import type { PayloadProps } from './utils/buildPayload'
 import { readableStreamToString } from '@remix-run/node'
 import cases from 'jest-in-case'
-import { createRemixRequest } from './createRemixRequest'
+import { adaptPayload } from './adaptPayload'
 import { buildPayload } from './utils/buildPayload'
 
 cases<{
@@ -11,7 +11,7 @@ cases<{
   'should pass HTTP method:',
   ({ method }) => {
     const payload = buildPayload({ method })
-    const request = createRemixRequest(payload)
+    const request = adaptPayload(payload)
     expect(request.method).toBe(method)
   },
   [
@@ -34,7 +34,7 @@ cases<{
   'should pass all headers:',
   ({ headers, expectedHeaders }) => {
     const payload = buildPayload({ headers })
-    const request = createRemixRequest(payload)
+    const request = adaptPayload(payload)
     expect(request.headers.raw()).toEqual(expectedHeaders)
   },
   [
@@ -67,7 +67,7 @@ cases<{
   'should build correct request URL:',
   ({ expectedUrl, headers, querystring, uri }) => {
     const payload = buildPayload({ headers, querystring, uri })
-    const result = createRemixRequest(payload)
+    const result = adaptPayload(payload)
     expect(result.url).toBe(expectedUrl)
   },
   [
@@ -103,7 +103,7 @@ cases<{ body?: PayloadProps['body']; name: string; method: PayloadProps['method'
   'should not pass body:',
   ({ body, method }) => {
     const payload = buildPayload({ body, method })
-    const result = createRemixRequest(payload)
+    const result = adaptPayload(payload)
     expect(result.body).toBe(null)
   },
   [
@@ -125,7 +125,7 @@ cases<{ body: PayloadProps['body']; headers?: PayloadProps['headers']; name: str
   'should pass body',
   async ({ body }) => {
     const payload = buildPayload({ body, method: 'POST' })
-    const result = createRemixRequest(payload)
+    const result = adaptPayload(payload)
     const encoding: BufferEncoding = body.encoding === 'text' ? 'utf8' : 'base64'
     expect(await readableStreamToString(result.body, encoding)).toBe(body.data)
   },

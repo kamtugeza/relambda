@@ -1,3 +1,3 @@
 import './globals'
 export * from './types'
-export * from './createRemixRequest'
+export * from './adaptPayload'
