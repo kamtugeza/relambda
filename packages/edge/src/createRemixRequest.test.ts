@@ -1,67 +1,17 @@
-import type { CloudFrontHeaders } from 'aws-lambda'
-import type { CloudFrontPayload } from './types'
+import type { PayloadProps } from './utils/buildPayload'
 import { readableStreamToString } from '@remix-run/node'
 import cases from 'jest-in-case'
 import { createRemixRequest } from './createRemixRequest'
-
-interface MockHeader {
-  key: string
-  value: string
-}
-
-interface MockEventProps {
-  body: {
-    data: string
-    encoding: 'base64' | 'text'
-  }
-  headers: MockHeader[]
-  method: 'GET' | 'HEAD' | 'POST'
-  querystring: string
-  uri: string
-}
-
-function createMockEvent({
-  body,
-  headers = [],
-  method = 'GET',
-  querystring = '',
-  uri = '/',
-}: Partial<MockEventProps>): CloudFrontPayload {
-  return {
-    Records: [
-      {
-        cf: {
-          config: {
-            distributionDomainName: 'FAKE_DISTRIBUTION_DOMAIN_NAME',
-            distributionId: 'FAKE_DISTRIBUTION_ID',
-            eventType: 'origin-request',
-            requestId: 'FAKE_REQUEST_ID',
-          },
-          request: {
-            body: body ? { ...body, action: 'read-only', inputTruncated: false } : undefined,
-            clientIp: 'FAKE_CLIENT_IP',
-            headers: headers.reduce((acc, header) => {
-              acc[header.key.toLowerCase()] = [header]
-              return acc
-            }, {} as CloudFrontHeaders),
-            method,
-            uri,
-            querystring,
-          },
-        },
-      },
-    ],
-  }
-}
+import { buildPayload } from './utils/buildPayload'
 
 cases<{
   name: string
-  method: MockEventProps['method']
+  method: PayloadProps['method']
 }>(
   'should pass HTTP method:',
   ({ method }) => {
-    const event = createMockEvent({ method })
-    const request = createRemixRequest(event)
+    const payload = buildPayload({ method })
+    const request = createRemixRequest(payload)
     expect(request.method).toBe(method)
   },
   [
@@ -78,13 +28,13 @@ cases<{
 
 cases<{
   name: string
-  headers: MockEventProps['headers']
+  headers: PayloadProps['headers']
   expectedHeaders: Record<string, string[]>
 }>(
   'should pass all headers:',
   ({ headers, expectedHeaders }) => {
-    const event = createMockEvent({ headers })
-    const request = createRemixRequest(event)
+    const payload = buildPayload({ headers })
+    const request = createRemixRequest(payload)
     expect(request.headers.raw()).toEqual(expectedHeaders)
   },
   [
@@ -109,15 +59,15 @@ cases<{
 
 cases<{
   expectedUrl: string
-  headers: MockEventProps['headers']
+  headers: PayloadProps['headers']
   name: string
-  querystring?: MockEventProps['querystring']
-  uri?: MockEventProps['uri']
+  querystring?: PayloadProps['querystring']
+  uri?: PayloadProps['uri']
 }>(
   'should build correct request URL:',
   ({ expectedUrl, headers, querystring, uri }) => {
-    const event = createMockEvent({ headers, querystring, uri })
-    const result = createRemixRequest(event)
+    const payload = buildPayload({ headers, querystring, uri })
+    const result = createRemixRequest(payload)
     expect(result.url).toBe(expectedUrl)
   },
   [
@@ -149,11 +99,11 @@ cases<{
   ],
 )
 
-cases<{ body?: MockEventProps['body']; name: string; method: MockEventProps['method'] }>(
+cases<{ body?: PayloadProps['body']; name: string; method: PayloadProps['method'] }>(
   'should not pass body:',
   ({ body, method }) => {
-    const event = createMockEvent({ body, method })
-    const result = createRemixRequest(event)
+    const payload = buildPayload({ body, method })
+    const result = createRemixRequest(payload)
     expect(result.body).toBe(null)
   },
   [
@@ -171,11 +121,11 @@ cases<{ body?: MockEventProps['body']; name: string; method: MockEventProps['met
   ],
 )
 
-cases<{ body: MockEventProps['body']; headers?: MockEventProps['headers']; name: string }>(
+cases<{ body: PayloadProps['body']; headers?: PayloadProps['headers']; name: string }>(
   'should pass body',
   async ({ body }) => {
-    const event = createMockEvent({ body, method: 'POST' })
-    const result = createRemixRequest(event)
+    const payload = buildPayload({ body, method: 'POST' })
+    const result = createRemixRequest(payload)
     const encoding: BufferEncoding = body.encoding === 'text' ? 'utf8' : 'base64'
     expect(await readableStreamToString(result.body, encoding)).toBe(body.data)
   },
