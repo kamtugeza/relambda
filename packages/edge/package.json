@@ -1,6 +1,7 @@
 {
   "name": "@relambda/edge",
-  "sideEffects": false,
+  "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "build": "tsup"
   },
@@ -8,6 +9,10 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.107",
     "tsup": "^6.2.3"
+  },
+  "peerDependencies": {
+    "@remix-run/node": "^1.7.2"
   }
 }
