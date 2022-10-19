@@ -1,20 +1,8 @@
 import type { CloudFrontRequest } from 'aws-lambda'
+import type { CloudFrontPayload } from './types'
 import { Headers as NodeHeaders, Request as NodeRequest } from '@remix-run/node'
 
-export interface CFOriginRequest {
-  config: unknown
-  request: CloudFrontRequest
-}
-
-export interface CFRecord {
-  cf: CFOriginRequest
-}
-
-export interface CFEvent {
-  Records: CFRecord[]
-}
-
-export function createRemixRequest({ Records }: CFEvent): NodeRequest {
+export function createRemixRequest({ Records }: CloudFrontPayload): NodeRequest {
   const request = Records[0].cf.request
   return new NodeRequest(getUrl(request), {
     body: getBody(request),

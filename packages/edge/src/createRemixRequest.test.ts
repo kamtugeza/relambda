@@ -1,5 +1,5 @@
 import type { CloudFrontHeaders } from 'aws-lambda'
-import type { CFEvent } from './createRemixRequest'
+import type { CloudFrontPayload } from './types'
 import { readableStreamToString } from '@remix-run/node'
 import cases from 'jest-in-case'
 import { createRemixRequest } from './createRemixRequest'
@@ -26,12 +26,17 @@ function createMockEvent({
   method = 'GET',
   querystring = '',
   uri = '/',
-}: Partial<MockEventProps>): CFEvent {
+}: Partial<MockEventProps>): CloudFrontPayload {
   return {
     Records: [
       {
         cf: {
-          config: undefined,
+          config: {
+            distributionDomainName: 'FAKE_DISTRIBUTION_DOMAIN_NAME',
+            distributionId: 'FAKE_DISTRIBUTION_ID',
+            eventType: 'origin-request',
+            requestId: 'FAKE_REQUEST_ID',
+          },
           request: {
             body: body ? { ...body, action: 'read-only', inputTruncated: false } : undefined,
             clientIp: 'FAKE_CLIENT_IP',
