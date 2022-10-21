@@ -7,7 +7,7 @@ import { adaptRemixResponse } from './adaptRemixResponse'
 
 interface LambdaHandlerProps {
   build: ServerBuild
-  loadContext?: (payload: CloudFrontOriginRequest) => AppLoadContext
+  loadContext?: (event: CloudFrontOriginRequest) => AppLoadContext
   mode: typeof process.env.NODE_ENV
 }
 
@@ -17,9 +17,9 @@ export function createLambdaHandler({
   mode = process.env.NODE_ENV,
 }: LambdaHandlerProps) {
   const requestRemix = createRequestHandler(build, mode)
-  return async (payload: CloudFrontOriginRequest): Promise<CloudFrontResultResponse> => {
-    const request = adaptOriginRequest(payload)
-    const context = loadContext?.(payload)
+  return async (event: CloudFrontOriginRequest): Promise<CloudFrontResultResponse> => {
+    const request = adaptOriginRequest(event)
+    const context = loadContext?.(event)
     const response = (await requestRemix(request, context)) as NodeResponse
     return await adaptRemixResponse(response)
   }

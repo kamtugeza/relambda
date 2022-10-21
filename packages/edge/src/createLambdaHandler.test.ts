@@ -32,7 +32,7 @@ it('should process the Origin Request with the Remix handler and return its resu
     })
   })
   mockedLoadContext.mockImplementation(() => ({ userId: 'FAKE_USER_ID' }))
-  const payload = buildOriginRequest({
+  const originRequest = buildOriginRequest({
     body: {
       data: 'FAKE_BODY',
       encoding: 'text',
@@ -46,7 +46,7 @@ it('should process the Origin Request with the Remix handler and return its resu
     uri: '/user',
   })
   const handler = createLambdaHandler({ loadContext: mockedLoadContext } as any)
-  expect(await handler(payload)).toMatchInlineSnapshot(`
+  expect(await handler(originRequest)).toMatchInlineSnapshot(`
     {
       "body": "FAKE_BODY",
       "bodyEncoding": "text",
@@ -68,7 +68,7 @@ it('should process the Origin Request with the Remix handler and return its resu
   `)
   expect(mockedBuilder).toHaveBeenCalledTimes(1)
   expect(mockedLoadContext).toHaveBeenCalledTimes(1)
-  expect(mockedLoadContext).toHaveBeenCalledWith(payload)
+  expect(mockedLoadContext).toHaveBeenCalledWith(originRequest)
   expect(mockedHandler).toHaveBeenCalledTimes(1)
   expect(mockedHandler.mock.lastCall).toMatchInlineSnapshot(`
     [
