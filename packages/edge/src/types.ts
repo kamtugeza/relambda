@@ -8,6 +8,6 @@ export interface CloudFrontRecord {
   cf: CloudFrontRecordData
 }
 
-export interface CloudFrontPayload {
+export interface CloudFrontOriginRequest {
   Records: CloudFrontRecord[]
 }

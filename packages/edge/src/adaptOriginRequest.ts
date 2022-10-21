@@ -1,8 +1,8 @@
 import type { CloudFrontRequest } from 'aws-lambda'
-import type { CloudFrontPayload } from './types'
+import type { CloudFrontOriginRequest } from './types'
 import { Headers as NodeHeaders, Request as NodeRequest } from '@remix-run/node'
 
-export function adaptPayload({ Records }: CloudFrontPayload): NodeRequest {
+export function adaptOriginRequest({ Records }: CloudFrontOriginRequest): NodeRequest {
   const request = Records[0].cf.request
   return new NodeRequest(getUrl(request), {
     body: getBody(request),

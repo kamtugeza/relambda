@@ -1,29 +1,29 @@
 import type { CloudFrontHeaders } from 'aws-lambda'
-import type { CloudFrontPayload } from '../types'
+import type { CloudFrontOriginRequest } from '../types'
 
-interface PayloadHeader {
+interface BuildOriginRequestHeader {
   key: string
   value: string
 }
 
-export interface PayloadProps {
+export interface BuildOriginRequestProps {
   body: {
     data: string
     encoding: 'base64' | 'text'
   }
-  headers: PayloadHeader[]
+  headers: BuildOriginRequestHeader[]
   method: 'GET' | 'HEAD' | 'POST'
   querystring: string
   uri: string
 }
 
-export function buildPayload({
+export function buildOriginRequest({
   body,
   headers = [],
   method = 'GET',
   querystring = '',
   uri = '/',
-}: Partial<PayloadProps> = {}): CloudFrontPayload {
+}: Partial<BuildOriginRequestProps> = {}): CloudFrontOriginRequest {
   return {
     Records: [
       {

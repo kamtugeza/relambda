@@ -1,8 +1,8 @@
-import { buildPayload } from './buildPayload'
+import { buildOriginRequest } from './buildOriginRequest'
 
 it('should build CloudFront Origin Request object', () => {
   expect(
-    buildPayload({
+    buildOriginRequest({
       body: {
         data: 'FAKE_DATA',
         encoding: 'text',

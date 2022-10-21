@@ -1,7 +1,7 @@
 import type { Request as NodeRequest } from '@remix-run/node'
 import { Response as NodeResponse, createRequestHandler } from '@remix-run/node'
 import { createLambdaHandler } from './createLambdaHandler'
-import { buildPayload } from './utils/buildPayload'
+import { buildOriginRequest } from './utils/buildOriginRequest'
 
 jest.mock('@remix-run/node', () => {
   const original = jest.requireActual('@remix-run/node')
@@ -32,7 +32,7 @@ it('should process the Origin Request with the Remix handler and return its resu
     })
   })
   mockedLoadContext.mockImplementation(() => ({ userId: 'FAKE_USER_ID' }))
-  const payload = buildPayload({
+  const payload = buildOriginRequest({
     body: {
       data: 'FAKE_BODY',
       encoding: 'text',

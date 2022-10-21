@@ -1,5 +1,5 @@
 import './globals'
-export * from './adaptPayload'
+export * from './adaptOriginRequest'
 export * from './adaptRemixResponse'
 export * from './createLambdaHandler'
 export * from './types'

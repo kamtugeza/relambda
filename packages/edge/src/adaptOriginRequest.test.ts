@@ -1,17 +1,22 @@
-import type { PayloadProps } from './utils/buildPayload'
+import type { BuildOriginRequestProps } from './utils/buildOriginRequest'
 import { readableStreamToString } from '@remix-run/node'
 import cases from 'jest-in-case'
-import { adaptPayload } from './adaptPayload'
-import { buildPayload } from './utils/buildPayload'
+import { adaptOriginRequest } from './adaptOriginRequest'
+import { buildOriginRequest } from './utils/buildOriginRequest'
+
+function buildTest(props: Partial<BuildOriginRequestProps> = {}) {
+  const payload = buildOriginRequest(props)
+  const request = adaptOriginRequest(payload)
+  return request
+}
 
 cases<{
   name: string
-  method: PayloadProps['method']
+  method: BuildOriginRequestProps['method']
 }>(
   'should pass HTTP method:',
   ({ method }) => {
-    const payload = buildPayload({ method })
-    const request = adaptPayload(payload)
+    const request = buildTest({ method })
     expect(request.method).toBe(method)
   },
   [
@@ -28,13 +33,12 @@ cases<{
 
 cases<{
   name: string
-  headers: PayloadProps['headers']
+  headers: BuildOriginRequestProps['headers']
   expectedHeaders: Record<string, string[]>
 }>(
   'should pass all headers:',
   ({ headers, expectedHeaders }) => {
-    const payload = buildPayload({ headers })
-    const request = adaptPayload(payload)
+    const request = buildTest({ headers })
     expect(request.headers.raw()).toEqual(expectedHeaders)
   },
   [
@@ -59,16 +63,15 @@ cases<{
 
 cases<{
   expectedUrl: string
-  headers: PayloadProps['headers']
+  headers: BuildOriginRequestProps['headers']
   name: string
-  querystring?: PayloadProps['querystring']
-  uri?: PayloadProps['uri']
+  querystring?: BuildOriginRequestProps['querystring']
+  uri?: BuildOriginRequestProps['uri']
 }>(
   'should build correct request URL:',
   ({ expectedUrl, headers, querystring, uri }) => {
-    const payload = buildPayload({ headers, querystring, uri })
-    const result = adaptPayload(payload)
-    expect(result.url).toBe(expectedUrl)
+    const request = buildTest({ headers, querystring, uri })
+    expect(request.url).toBe(expectedUrl)
   },
   [
     {
@@ -99,12 +102,15 @@ cases<{
   ],
 )
 
-cases<{ body?: PayloadProps['body']; name: string; method: PayloadProps['method'] }>(
+cases<{
+  body?: BuildOriginRequestProps['body']
+  name: string
+  method: BuildOriginRequestProps['method']
+}>(
   'should not pass body:',
   ({ body, method }) => {
-    const payload = buildPayload({ body, method })
-    const result = adaptPayload(payload)
-    expect(result.body).toBe(null)
+    const request = buildTest({ body, method })
+    expect(request.body).toBe(null)
   },
   [
     {
@@ -121,13 +127,16 @@ cases<{ body?: PayloadProps['body']; name: string; method: PayloadProps['method'
   ],
 )
 
-cases<{ body: PayloadProps['body']; headers?: PayloadProps['headers']; name: string }>(
+cases<{
+  body: BuildOriginRequestProps['body']
+  headers?: BuildOriginRequestProps['headers']
+  name: string
+}>(
   'should pass body',
   async ({ body }) => {
-    const payload = buildPayload({ body, method: 'POST' })
-    const result = adaptPayload(payload)
+    const request = buildTest({ body, method: 'POST' })
     const encoding: BufferEncoding = body.encoding === 'text' ? 'utf8' : 'base64'
-    expect(await readableStreamToString(result.body, encoding)).toBe(body.data)
+    expect(await readableStreamToString(request.body, encoding)).toBe(body.data)
   },
   [
     {
