@@ -1,7 +1,33 @@
 {
   "name": "@relambda/edge",
   "version": "1.0.0-alpha.0",
+  "description": "The builder of AWS Lambda@Edge (Origin Requests) handler for Remix",
+  "keywords": [
+    "aws",
+    "builder",
+    "edge",
+    "cloudfront",
+    "handler",
+    "lambda",
+    "origin",
+    "remix",
+    "request"
+  ],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kamtugeza/relambda/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kamtugeza/relambda",
+    "directory": "packages/edge"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsup"
   },
