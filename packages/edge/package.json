@@ -43,5 +43,6 @@
   },
   "peerDependencies": {
     "@remix-run/node": "^1.7.2"
-  }
+  },
+  "gitHead": "0f0a068651c51446358633f06f6fa434e0aeb3fc"
 }
