@@ -1,6 +1,6 @@
 # Relambda
 
-The _Relambda_ is a set of packages that allows you to run your [Remix](https://remix.run/) project on [AWS Lambda@Edge](https://aws.amazon.com/lambda/)'s.
+The _Relambda_ is a set of packages that allows you to run your [Remix](https://remix.run/) project on [AWS Lambda](https://aws.amazon.com/lambda/)'s.
 
 This packages allows you to build infrastructure without forcing you to use a specific IaC library (how it has been done in `@remix-run/architect`).
 
