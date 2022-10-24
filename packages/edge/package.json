@@ -1,6 +1,6 @@
 {
   "name": "@relambda/edge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The builder of AWS Lambda@Edge (Origin Requests) handler for Remix",
   "keywords": [
     "aws",
